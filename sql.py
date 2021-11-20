@@ -5,11 +5,11 @@ from json import dumps
 from psycopg2 import connect, sql
 
 db = connect(
-    host='localhost',
+    host='ec2-34-204-58-13.compute-1.amazonaws.com',
     port='5432',
-    user='postgres',
-    database='school',
-    password='qsa-1299'
+    user='qabfwlyhrismmv',
+    database='d52fn9luqlu0bq',
+    password='7bb22ef7886bc5b2bd31a2e83c28ffc3ef1bec7ea038fca50bb04d720386121d'
 )
 cursor = db.cursor()
 
