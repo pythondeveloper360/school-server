@@ -54,6 +54,7 @@ async def authTeacher(req:Request):
 @app.get('/onDayWork')
 async def onDayWork():
     work = sql.checkOnDayWork()
+    print(work)
     return {'status':True} if work else {"status":False}
 
 @app.post('/uploadWork')
