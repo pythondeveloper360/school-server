@@ -31,9 +31,10 @@ async def getWork(request: Request):
         return {'status': 'error'}
 
 
-@app.get('/work/{id}')
-async def workById(id: str):
-    work = sql.getWorkWithId(id)
+@app.get('/workById')
+async def workById(req:Request):
+    if req.headers.get('id'):
+        work = sql.getWorkWithId(req.headers.get('id'))
     return work if work else {'status': 'error'}
 
 
