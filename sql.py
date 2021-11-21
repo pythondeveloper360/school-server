@@ -45,7 +45,8 @@ def getWorkWithId(id: str):
             time=sql.Identifier("time"))
     cursor.execute(sqlquery, (id,))
     data = cursor.fetchone()
-    return {'id': data[0], 'date': data[1].strftime('%b %d %A'), 'hw': data[2]['hw'], 'cw': data[3]['cw'], 'time': data[6].strftime('%-I:%M %p')} if data else False
+    # print(data[1].strftime('%b %d %A'))
+    return {'id': data[0], 'date': data[1].strftime('%b %d %A'), 'hw': data[2]['hw'], 'cw': data[3]['cw'], 'time': data[4].strftime('%-I:%M %p') if data[4] else ''} if data else False
 
 
 def checkOnDayWork(date=datetime.datetime.now().strftime('%Y-%m-%d')):
