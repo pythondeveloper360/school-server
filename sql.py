@@ -37,13 +37,18 @@ def getAllWork(_class: str, section: str):
 
 def getWorkWithId(id: str):
     sqlquery = sql.SQL(
-        'select * from work where {id} = %s').format(id=sql.Identifier("id"))
+        'select {id},{date},{hw},{cw},{time} from work where {id} = %s').format(
+            id=sql.Identifier("id"),
+            date=sql.Identifier("date"),
+            hw=sql.Identifier("hw"),
+            cw=sql.Identifier("cw"),
+            time=sql.Identifier("time"))
     cursor.execute(sqlquery, (id,))
     data = cursor.fetchone()
     return {'id': data[0], 'date': data[1].strftime('%b %d %A'), 'hw': data[2]['hw'], 'cw': data[3]['cw'], 'time': data[6].strftime('%-I:%M %p')} if data else False
 
 
-def checkOnDayWork(date = datetime.datetime.now().strftime('%Y-%m-%d')):
+def checkOnDayWork(date=datetime.datetime.now().strftime('%Y-%m-%d')):
     sqlquery = sql.SQL('select id from work where {date} = %s').format(
         date=sql.Identifier("date"))
     cursor.execute(sqlquery, (date,))
@@ -92,24 +97,26 @@ def authStudent(gr):
 def authTeacher(email, password):
     sqlquery = sql.SQL('select * from teachers where {email} = %s and {password} = %s').format(
         email=sql.Identifier("email"), password=sql.Identifier("password"))
-    cursor.execute(sqlquery,(email,password))
+    cursor.execute(sqlquery, (email, password))
     data = cursor.fetchone()
-    return {'auth':True} if data else False
+    return {'auth': True} if data else False
 
-def getTeacherCredential(email:str):
-    sqlquery = sql.SQL('select * from teachers where {email} = %s').format(email = sql.Identifier("email"))
-    cursor.execute(sqlquery,(email,))
+
+def getTeacherCredential(email: str):
+    sqlquery = sql.SQL(
+        'select * from teachers where {email} = %s').format(email=sql.Identifier("email"))
+    cursor.execute(sqlquery, (email,))
     data = cursor.fetchone()
-    return {"email":data[0],'name':data[1],"class":data[2],"section":data[3]} if data else False
+    return {"email": data[0], 'name': data[1], "class": data[2], "section": data[3]} if data else False
 
-def newTeacher(email:str,password:str,section:str,_class:str,name:str):
+
+def newTeacher(email: str, password: str, section: str, _class: str, name: str):
     sqlquery = sql.SQL('insert into newteachers ({email},{password},{name},{section},{_class} values (%s,%s,%s,%s,%s))').format(
-        email = sql.Identifier("email"),
-        password = sql.Identifier("password"),
-        name = sql.Identifier("name"),
-        section = sql.Identifier("section"),
-        _class = sql.Identifier("class")
+        email=sql.Identifier("email"),
+        password=sql.Identifier("password"),
+        name=sql.Identifier("name"),
+        section=sql.Identifier("section"),
+        _class=sql.Identifier("class")
     )
-    cursor.execute(sqlquery,(email,password,name,section,_class))
+    cursor.execute(sqlquery, (email, password, name, section, _class))
     db.commit()
-
