@@ -52,8 +52,14 @@ async def authTeacher(req:Request):
     return {'auth':True} if work else {'auth':False}
 
 @app.get('/onDayWork')
-async def onDayWork():
-    work = sql.checkOnDayWork()
+async def onDayWork(req:Request):
+    work = False
+    if req.headers.get('gr'):
+        cre = sql.getCredential(req.headers.get('gr'))
+        work = sql.checkOnDayWork(_class = cre.get('class'),section= cre.get('section')) if cre else False
+    elif req.headers.get('email'):
+        cre = sql.getTeacherCredential(req.headers.get('email'))
+        work = sql.checkOnDayWork(_class = cre.get('class'),section= cre.get('section')) if cre else False
     return {'status':True} if work else {"status":False}
 
 @app.post('/uploadWork')
