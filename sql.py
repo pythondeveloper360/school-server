@@ -3,7 +3,7 @@ import random
 from json import dumps
 
 from psycopg2 import connect, sql
-Server
+# Server
 db = connect(
     host='ec2-34-204-58-13.compute-1.amazonaws.com',
     port='5432',
