@@ -3,7 +3,7 @@ import random
 from json import dumps
 
 from psycopg2 import connect, sql
-
+Server
 db = connect(
     host='ec2-34-204-58-13.compute-1.amazonaws.com',
     port='5432',
@@ -11,6 +11,14 @@ db = connect(
     database='d52fn9luqlu0bq',
     password='7bb22ef7886bc5b2bd31a2e83c28ffc3ef1bec7ea038fca50bb04d720386121d'
 )
+# db = connect(
+#     host='localhost',
+#     port='5432',
+#     user='postgres',
+#     database='school',
+#     password='qsa-1299'
+# )
+
 cursor = db.cursor()
 
 alphabet = [*[chr(i) for i in range(97, 123)], *[chr(i)
@@ -97,6 +105,7 @@ def authStudent(gr):
         grNo=sql.Identifier("gr"))
     cursor.execute(sqlquery, (gr,))
     data = cursor.fetchone()
+    print(gr)
     return data[0] if data else False
 
 
