@@ -71,7 +71,8 @@ def checkOnDayWork(_class,section,date = None):
 
 
 def insertWork(_class: str, section: str, hw: list, cw: list):
-    _date = datetime.datetime.now().strftime('%Y-%m-%d')
+    _date = datetime.datetime.now()
+    _id = idGenerator()
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
     sqlquery = sql.SQL(
@@ -83,10 +84,10 @@ def insertWork(_class: str, section: str, hw: list, cw: list):
             cw=sql.Identifier("cw"),
             section=sql.Identifier("section")
     )
-    cursor.execute(sqlquery, (idGenerator(), _date,
+    cursor.execute(sqlquery, (_id, _date.strftime('%Y-%m-%d'),
                               dumps({"hw": hw}), dumps({"cw": cw}), _class, section.upper()))
     db.commit()
-    return True
+    return {'work':True,"id":_id,'date':_date.strftime('%b %d %A')}
     # TODO and this line
     # else:
     #     return False

@@ -65,15 +65,18 @@ async def onDayWork(req:Request):
 @app.post('/uploadWork')
 async def uploadWork(req:Request):
     jData = await req.json()
-    if jData.get('email') and jData.get('cw'):
-        teacher = sql.getTeacherCredential(jData.get('email'))
-        if teacher:
-            if sql.insertWork(section = teacher.get('section'),_class = teacher.get('class'),hw= jData.get('hw'),cw  = jData.get('cw')):
-                return {'status':True}
+    if jData.get('email') and jData.get('cw') and jData.get('password'):
+        if sql.authTeacher(jData.get('email'),jData.get('password')):
+            teacher = sql.getTeacherCredential(jData.get('email'))
+            if teacher:
+                work = sql.insertWork(section = teacher.get('section'),_class = teacher.get('class'),hw= jData.get('hw'),cw  = jData.get('cw'))
+                if work:
+                    return work
+                else:
+                    return{"status":False}
             else:
                 return{"status":False}
-        else:
-            return{"status":False}
+        else:{"stauts":'unauthorized'}
     else:
         return{"status":False}
     
