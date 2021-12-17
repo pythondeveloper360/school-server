@@ -31,8 +31,8 @@ async def getWork(request: Request):
         return {'status': 'error'}
 @app.get('/parentWorks')
 async def getParentWorks(req:Request):
-    if req.get('phone'):
-        if sql.checkParent(req.get('phone')):
+    if req.headers.get('phone'):
+        if sql.checkParent(req.headers.get('phone')):
             return sql.getAllWorkForParent(phone = req.get('phone'))
         else:
             return {"status":'eruturor'}
