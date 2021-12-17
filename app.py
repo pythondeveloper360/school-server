@@ -33,7 +33,7 @@ async def getWork(request: Request):
 async def getParentWorks(req:Request):
     if req.headers.get('phone'):
         if sql.checkParent(req.headers.get('phone')):
-            return sql.getAllWorkForParent(phone = req.get('phone'))
+            return sql.getAllWorkForParent(phone = req.headers.get('phone'))
         else:
             return {"status":'eruturor'}
     else:return {"status":'error'}
