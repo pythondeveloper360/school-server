@@ -35,7 +35,7 @@ async def getParentWorks(req:Request):
         if sql.checkParent(req.get('phone')):
             return sql.getAllWorkForParent(phone = req.get('phone'))
         else:
-            return {"status":'error'}
+            return {"status":'eruturor'}
     else:return {"status":'error'}
 
 
