@@ -31,10 +31,12 @@ async def getWork(request: Request):
         return {'status': 'error'}
 @app.get('/parentWorks')
 async def getParentWorks(req:Request):
-    if sql.checkParent():
-        return sql.getAllWorkForParent(phone = req.get('phone'))
-    else:
-        return {"status":'error'}
+    if req.get('phone'):
+        if sql.checkParent(req.get('phone')):
+            return sql.getAllWorkForParent(phone = req.get('phone'))
+        else:
+            return {"status":'error'}
+    else:return {"status":'error'}
 
 
 @app.get('/workById')
