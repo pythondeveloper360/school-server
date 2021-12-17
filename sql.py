@@ -3,6 +3,7 @@ import random
 from json import dumps
 
 from psycopg2 import connect, sql
+
 # Server
 db = connect(
     host='ec2-34-204-58-13.compute-1.amazonaws.com',
@@ -57,15 +58,15 @@ def getWorkWithId(id: str):
     return {'id': data[0], 'date': data[1].strftime('%b %d %A'), 'hw': data[2]['hw'], 'cw': data[3]['cw'], 'time': data[4].strftime('%-I:%M %p') if data[4] else ''} if data else False
 
 
-def checkOnDayWork(_class,section,date = None):
+def checkOnDayWork(_class, section, date=None):
     date = datetime.datetime.now() if not date else date
-    t = datetime.timedelta(hours = 12)
+    t = datetime.timedelta(hours=12)
     date = date+t
     sqlquery = sql.SQL('select id from work where {date} = %s and {_class} = %s and {section} = %s').format(
         date=sql.Identifier("date"),
-        _class = sql.Identifier("class"),
-        section = sql.Identifier("section"))
-    cursor.execute(sqlquery, (date,_class,section))
+        _class=sql.Identifier("class"),
+        section=sql.Identifier("section"))
+    cursor.execute(sqlquery, (date, _class, section))
     data = cursor.fetchone()
     return True if data else False
 
@@ -87,7 +88,7 @@ def insertWork(_class: str, section: str, hw: list, cw: list):
     cursor.execute(sqlquery, (_id, _date.strftime('%Y-%m-%d'),
                               dumps({"hw": hw}), dumps({"cw": cw}), _class, section.upper()))
     db.commit()
-    return {'work':True,"id":_id,'date':_date.strftime('%b %d %A')}
+    return {'work': True, "id": _id, 'date': _date.strftime('%b %d %A')}
     # TODO and this line
     # else:
     #     return False
@@ -136,3 +137,35 @@ def newTeacher(email: str, password: str, section: str, _class: str, name: str):
     )
     cursor.execute(sqlquery, (email, password, name, section, _class))
     db.commit()
+
+
+def checkParent(phone):
+    sqlquery = sql.SQL(
+        'select * from parents where {phone}  = %s').format(phone=sql.Identifier("phone"))
+    cursor.execute(sqlquery, (phone,))
+    data = cursor.fetchall()
+    return True if data else False
+
+
+def createParent(phone, children: list):
+    if not checkParent(phone=phone):
+        sqlquery = sql.SQL('insert into parents ({id},{phone},{children}) values (%s,%s,%s)').format(
+            id=sql.Identifier("id"), phone=sql.Identifier("phone"), children=sql.Identifier("children"))
+        cursor.execute(sqlquery, (idGenerator(), phone, children))
+        db.commit()
+        return True
+    else:
+        return False
+
+
+def getAllWorkForParent(phone):
+    sqlquery = sql.SQL('select {id},{date},{_class},{section} from work where %s = any(parents)').format(
+        id=sql.Identifier("id"),
+        date = sql.Identifier("date"),
+        _class = sql.Identifier("class"),
+        section  = sql.Identifier("section")
+        )
+    cursor.execute(sqlquery, (phone,))
+    data = cursor.fetchall()
+    rList = [{'id':i[0],'date':i[1].strftime('%b %d %A'),'class':i[2],"section":i[3]} for i in data]
+    return rList

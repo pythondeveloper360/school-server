@@ -29,6 +29,12 @@ async def getWork(request: Request):
             return{"work": sql.getAllWork(credentials['class'], credentials['section'])}
     else:
         return {'status': 'error'}
+@app.get('/parentWorks')
+async def getParentWorks(req:Request):
+    if sql.checkParent():
+        return sql.getAllWorkForParent(phone = req.get('phone'))
+    else:
+        return {"status":'error'}
 
 
 @app.get('/workById')
