@@ -62,7 +62,7 @@ async def authTeacher(req: Request):
     work = sql.authTeacher(email=email, password=password)
     return {'auth': True} if work else {'auth': False}
 
-@app.get('authParent')
+@app.get('/authParent')
 async def authParent(req:Request):
     if req.headers.get('phone') and sql.checkParent(req.headers.get('phone')):
         return {"status": True}
