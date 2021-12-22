@@ -44,7 +44,7 @@ def getAllWork(_class: str, section: str):
     return [{"id": i[0], "date":i[1].strftime('%b %d %A')} for i in data][::-1] if data else False
 
 
-def getWorkWithId(id: str):
+def getWorkWithId(id: str,gr = None):
     sqlquery = sql.SQL(
         'select {id},{date},{hw},{cw},{time} from work where {id} = %s').format(
             id=sql.Identifier("id"),
@@ -54,7 +54,8 @@ def getWorkWithId(id: str):
             time=sql.Identifier("time"))
     cursor.execute(sqlquery, (id,))
     data = cursor.fetchone()
-    # print(data[1].strftime('%b %d %A'))
+    if gr:
+        seenWork(data[0],gr)
     return {'id': data[0], 'date': data[1].strftime('%b %d %A'), 'hw': data[2]['hw'], 'cw': data[3]['cw'], 'time': data[4].strftime('%-I:%M %p') if data[4] else ''} if data else False
 
 
@@ -169,3 +170,22 @@ def getAllWorkForParent(phone):
     data = cursor.fetchall()
     rList = [{'id':i[0],'date':i[1].strftime('%b %d %A'),'class':i[2],"section":i[3]} for i in data]
     return rList
+
+def seenWork(id,by):
+    sqlquery = sql.SQL('select {seenBy} from work where {id} = %s').format(seenBy = sql.Identifier("seenby"),id = sql.Identifier("id"))
+    cursor.execute(sqlquery,(id,))
+    data = cursor.fetchone()
+    data = data[0] if data[0] else []
+    studentCredentials = getCredential(by)
+    if studentCredentials:
+        for x in data:
+            if x['gr'] == by:
+                return True
+        data.append({"name":studentCredentials['name'],'gr':by})
+        sqlquery = sql.SQL('update work set {seenBy} = %s where {id} = %s').format(seenBy = sql.Identifier("seenby"),id = sql.Identifier("id"))
+        cursor.execute(sqlquery,(dumps(data),id))
+        db.commit()
+        return True
+    else:
+        return False
+    # data.append(by)
