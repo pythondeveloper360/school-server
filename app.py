@@ -20,13 +20,17 @@ async def getWork(request: Request):
     gr = request.headers.get('gr')
     email = request.headers.get('email')
     if gr:
-        credentials = sql.getCredential(gr=gr)
-        if credentials:
-            return {'works': sql.getAllWork(credentials['class'], credentials['section'])}
+        if gr:
+            return {'works': sql.getAllWorkStudent(gr=gr)}
+        else:
+            return {'status': 'error'}
+
     elif email:
         credentials = sql.getTeacherCredential(email=email)
         if credentials:
             return{"works": sql.getAllWork(credentials['class'], credentials['section'])}
+        else:
+            return {'status': 'error'}
     else:
         return {'status': 'error'}
 

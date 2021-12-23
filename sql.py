@@ -43,6 +43,35 @@ def getAllWork(_class: str, section: str):
     data = cursor.fetchall()
     return [{"id": i[0], "date":i[1].strftime('%b %d %A')} for i in data][::-1] if data else False
 
+def getAllWorkStudent(gr):
+    rData = []
+    cre = getCredential(gr= gr)
+    if cre:
+        sqlquery = sql.SQL('select {id},{date},{seenBy} from work where {_class} = %s and {section} = %s').format(
+        _class=sql.Identifier("class"),
+        section=sql.Identifier("section"),
+        id=sql.Identifier("id"),
+        seenBy = sql.Identifier("seenby"),
+        date=sql.Identifier("date")
+    )
+
+        cursor.execute(sqlquery, (cre['class'], cre['section']))
+        data = cursor.fetchall()
+        if data:
+            for i in data:
+                rData.append({"id" :i[0],"date":i[1],"seen":checkSeenBy(i[2],gr)})
+            return rData
+        else:
+            return False
+    else:
+        return False
+        
+
+def checkSeenBy(gr:str,seenBy:list= []):
+    for item in seenBy:
+        if item['gr'] == gr:
+            return True
+    return False
 
 def getWorkWithId(id: str,gr = None):
     sqlquery = sql.SQL(
