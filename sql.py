@@ -59,7 +59,7 @@ def getAllWorkStudent(gr):
         data = cursor.fetchall()
         if data:
             for i in data:
-                rData.append({"id" :i[0],"date":i[1],"seen":checkSeenBy(seenBy=i[2],gr = gr)})
+                rData.append({"id" :i[0],"date":i[1].strftime('%b %d %A'),"seen":checkSeenBy(seenBy=i[2],gr = gr)})
             return rData
         else:
             return False
