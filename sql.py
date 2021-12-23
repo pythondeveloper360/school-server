@@ -68,23 +68,24 @@ def getAllWorkStudent(gr):
         
 
 def checkSeenBy(gr:str,seenBy:list= []):
-    for item in seenBy:
-        if item['gr'] == gr:
-            return True
+    if seenBy:
+        for item in seenBy:
+            if item['gr'] == gr:
+                return True
     return False
 
-def getWorkWithId(id: str,gr = None):
+def getWorkWithId(_id: str,gr = None):
     sqlquery = sql.SQL(
-        'select {id},{date},{hw},{cw},{time} from work where {id} = %s').format(
-            id=sql.Identifier("id"),
+        'select {_id},{date},{hw},{cw},{time} from work where {_id} = %s').format(
+            _id=sql.Identifier("id"),
             date=sql.Identifier("date"),
             hw=sql.Identifier("hw"),
             cw=sql.Identifier("cw"),
             time=sql.Identifier("time"))
-    cursor.execute(sqlquery, (id,))
+    cursor.execute(sqlquery, (_id,))
     data = cursor.fetchone()
     if gr:
-        seenWork(data[0],gr)
+        seenWork(_id,gr)
     return {'id': data[0], 'date': data[1].strftime('%b %d %A'), 'hw': data[2]['hw'], 'cw': data[3]['cw'], 'time': data[4].strftime('%-I:%M %p') if data[4] else ''} if data else False
 
 
