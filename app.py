@@ -38,7 +38,7 @@ async def getWork(request: Request):
 @app.get('/authStaff')
 def authStaff(req: Request):
     if req.headers.get('username') and req.headers.get('password'):
-        w = sql.AuthStaff(req.headers.get('usernaeme'),
+        w = sql.AuthStaff(req.headers.get('username'),
                           password=req.headers.get('password'))
         if w:
             return {"auth": True, "name": w}
