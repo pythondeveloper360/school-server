@@ -43,38 +43,41 @@ def getAllWork(_class: str, section: str):
     data = cursor.fetchall()
     return [{"id": i[0], "date":i[1].strftime('%b %d %A')} for i in data][::-1] if data else False
 
+
 def getAllWorkStudent(gr):
     rData = []
-    cre = getCredential(gr= gr)
+    cre = getCredential(gr=gr)
     if cre:
         sqlquery = sql.SQL('select {id},{date},{seenBy} from work where {_class} = %s and {section} = %s').format(
-        _class=sql.Identifier("class"),
-        section=sql.Identifier("section"),
-        id=sql.Identifier("id"),
-        seenBy = sql.Identifier("seenby"),
-        date=sql.Identifier("date")
-    )
+            _class=sql.Identifier("class"),
+            section=sql.Identifier("section"),
+            id=sql.Identifier("id"),
+            seenBy=sql.Identifier("seenby"),
+            date=sql.Identifier("date")
+        )
 
         cursor.execute(sqlquery, (cre['class'], cre['section']))
         data = cursor.fetchall()
         if data:
             for i in data:
-                rData.append({"id" :i[0],"date":i[1].strftime('%b %d %A'),"seen":checkSeenBy(seenBy=i[2],gr = gr)})
+                rData.append({"id": i[0], "date": i[1].strftime(
+                    '%b %d %A'), "seen": checkSeenBy(seenBy=i[2], gr=gr)})
             return rData
         else:
             return False
     else:
         return False
-        
 
-def checkSeenBy(gr:str,seenBy:list= []):
+
+def checkSeenBy(gr: str, seenBy: list = []):
     if seenBy:
         for item in seenBy:
             if item['gr'] == gr:
                 return True
     return False
 
-def getWorkWithId(_id: str,gr = None):
+
+def getWorkWithId(_id: str, gr=None):
     sqlquery = sql.SQL(
         'select {_id},{date},{hw},{cw},{time} from work where {_id} = %s').format(
             _id=sql.Identifier("id"),
@@ -85,7 +88,7 @@ def getWorkWithId(_id: str,gr = None):
     cursor.execute(sqlquery, (_id,))
     data = cursor.fetchone()
     if gr:
-        seenWork(_id,gr)
+        seenWork(_id, gr)
     return {'id': data[0], 'date': data[1].strftime('%b %d %A'), 'hw': data[2]['hw'], 'cw': data[3]['cw'], 'time': data[4].strftime('%-I:%M %p') if data[4] else ''} if data else False
 
 
@@ -192,18 +195,21 @@ def createParent(phone, children: list):
 def getAllWorkForParent(phone):
     sqlquery = sql.SQL('select {id},{date},{_class},{section} from work where %s = any(parents)').format(
         id=sql.Identifier("id"),
-        date = sql.Identifier("date"),
-        _class = sql.Identifier("class"),
-        section  = sql.Identifier("section")
-        )
+        date=sql.Identifier("date"),
+        _class=sql.Identifier("class"),
+        section=sql.Identifier("section")
+    )
     cursor.execute(sqlquery, (phone,))
     data = cursor.fetchall()
-    rList = [{'id':i[0],'date':i[1].strftime('%b %d %A'),'class':i[2],"section":i[3]} for i in data]
+    rList = [{'id': i[0], 'date':i[1].strftime(
+        '%b %d %A'), 'class':i[2], "section":i[3]} for i in data]
     return rList
 
-def seenWork(id,by):
-    sqlquery = sql.SQL('select {seenBy} from work where {id} = %s').format(seenBy = sql.Identifier("seenby"),id = sql.Identifier("id"))
-    cursor.execute(sqlquery,(id,))
+
+def seenWork(id, by):
+    sqlquery = sql.SQL('select {seenBy} from work where {id} = %s').format(
+        seenBy=sql.Identifier("seenby"), id=sql.Identifier("id"))
+    cursor.execute(sqlquery, (id,))
     data = cursor.fetchone()
     data = data[0] if data[0] else []
     studentCredentials = getCredential(by)
@@ -211,11 +217,21 @@ def seenWork(id,by):
         for x in data:
             if x['gr'] == by:
                 return True
-        data.append({"name":studentCredentials['name'],'gr':by})
-        sqlquery = sql.SQL('update work set {seenBy} = %s where {id} = %s').format(seenBy = sql.Identifier("seenby"),id = sql.Identifier("id"))
-        cursor.execute(sqlquery,(dumps(data),id))
+        data.append({"name": studentCredentials['name'], 'gr': by})
+        sqlquery = sql.SQL('update work set {seenBy} = %s where {id} = %s').format(
+            seenBy=sql.Identifier("seenby"), id=sql.Identifier("id"))
+        cursor.execute(sqlquery, (dumps(data), id))
         db.commit()
         return True
     else:
         return False
     # data.append(by)
+
+
+def AuthStaff(username, password):
+    sqlquery = sql.SQL('select name from staff where {username} = %s and {password} = %s').format(
+        username=sql.Identifier("username"), password=sql.Identifier("password"))
+    cursor.execute(sqlquery,(username,password))
+    data = cursor.fetchone()
+    data = data[0] if data else False
+    return data

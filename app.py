@@ -35,6 +35,20 @@ async def getWork(request: Request):
         return {'status': 'error'}
 
 
+@app.get('/authStaff')
+def authStaff(req: Request):
+    if req.headers.get('username') and req.headers.get('password'):
+        w = sql.AuthStaff(req.headers.get('usernaeme'),
+                          password=req.headers.get('password'))
+        if w:
+            return {"auth": True, "name": w}
+        else:
+            return{"auth": False}
+    else:
+        return{"auth": False}
+    
+
+
 @app.get('/parentWorks')
 async def getParentWorks(req: Request):
     if req.headers.get('phone'):
