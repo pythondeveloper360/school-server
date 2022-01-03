@@ -161,7 +161,7 @@ def getTeacherCredential(email: str):
     return {"email": data[0], 'name': data[1], "class": data[2], "section": data[3]} if data else False
 
 
-def newTeacher(email: str, password: str, section: str, _class: str, name: str):
+def newTeacher(email: str, section: str, _class: str, name: str):
     sqlquery = sql.SQL('insert into newteachers ({email},{password},{name},{section},{_class} values (%s,%s,%s,%s,%s))').format(
         email=sql.Identifier("email"),
         password=sql.Identifier("password"),
@@ -169,7 +169,7 @@ def newTeacher(email: str, password: str, section: str, _class: str, name: str):
         section=sql.Identifier("section"),
         _class=sql.Identifier("class")
     )
-    cursor.execute(sqlquery, (email, password, name, section, _class))
+    cursor.execute(sqlquery, (email, email, name, section, _class))
     db.commit()
 
 

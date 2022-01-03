@@ -47,6 +47,15 @@ def authStaff(req: Request):
     else:
         return{"auth": False}
 
+@app.get('/addTeacher')
+def addTeacher(req:Request):
+    email,name,_class,section = req.headers.get('email'),req.headers.get('name'),req.headers.get('class'),req.headers.get('section')
+    if email and name and _class and section:
+        sql.newTeacher(email= email,name= name,_class = _class,section= section)
+        return {'status':True}
+    else:
+        return{'status':False}
+    
 
 @app.get('/allTeachers')
 def allTeachers(req: Request):
