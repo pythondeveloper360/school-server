@@ -229,9 +229,23 @@ def seenWork(id, by):
 
 
 def AuthStaff(username, password):
+    if username == '' or password == '':
+        return False
     sqlquery = sql.SQL('select name from staff where {username} = %s and {password} = %s').format(
         username=sql.Identifier("username"), password=sql.Identifier("password"))
-    cursor.execute(sqlquery,(username,password))
+    cursor.execute(sqlquery, (username, password))
     data = cursor.fetchone()
     data = data[0] if data else False
     return data
+
+
+def allTeachers():
+    sqlquery = sql.SQL('select {email}, {name},{_class},{section} from teachers').format(
+        email=sql.Identifier("email"),
+        name=sql.Identifier("name"),
+        _class=sql.Identifier("class"),
+        section=sql.Identifier("section")
+    )
+    cursor.execute(sqlquery)
+    data = cursor.fetchall()
+    return [{'email': i[0], 'name':i[1], 'class':i[2], "section":i[3]} for i in data]

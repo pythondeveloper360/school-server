@@ -46,7 +46,14 @@ def authStaff(req: Request):
             return{"auth": False}
     else:
         return{"auth": False}
-    
+
+
+@app.get('/allTeachers')
+def allTeachers(req: Request):
+    if sql.AuthStaff(username=req.headers.get('username'), password=req.headers.get('password')):
+        return {'status':True,"teachers":sql.allTeachers()}
+    else:
+        return{'status':False}
 
 
 @app.get('/parentWorks')
