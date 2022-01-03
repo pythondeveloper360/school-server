@@ -59,7 +59,6 @@ async def addTeacher(req:Request):
 @app.post('/addTeacherCsv')
 async def addTeacherCsv(file:UploadFile = File(...)):
     content = await file.read()
-
     print(content)
 
 @app.get('/allTeachers')
