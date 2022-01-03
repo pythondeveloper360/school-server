@@ -162,7 +162,7 @@ def getTeacherCredential(email: str):
 
 
 def newTeacher(email: str, section: str, _class: str, name: str):
-    sqlquery = sql.SQL('insert into newteachers ({email},{password},{name},{section},{_class} values (%s,%s,%s,%s,%s))').format(
+    sqlquery = sql.SQL('insert into teachers ({email},{password},{name},{section},{_class}) values (%s,%s,%s,%s,%s)').format(
         email=sql.Identifier("email"),
         password=sql.Identifier("password"),
         name=sql.Identifier("name"),
