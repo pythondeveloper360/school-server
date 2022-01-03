@@ -49,8 +49,8 @@ def authStaff(req: Request):
 
 @app.get('/addTeacher')
 def addTeacher(req:Request):
-    email,name,_class,section = req.headers.get('email'),req.headers.get('name'),req.headers.get('class'),req.headers.get('section')
-    if email and name and _class and section:
+    email,name,_class,section,username,password = req.headers.get('email'),req.headers.get('name'),req.headers.get('class'),req.headers.get('section'),req.headers.get('username'),req.headers.get('password')
+    if (email and name and _class and section) and sql.AuthStaff(username=username,password=password):
         sql.newTeacher(email= email,name= name,_class = _class,section= section)
         return {'status':True}
     else:
