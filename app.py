@@ -56,7 +56,7 @@ def addTeacher(req:Request):
     else:
         return{'status':False}
     
-@app.get('/addTeacherCsv')
+@app.post('/addTeacherCsv')
 def addTeacherCsv(file:UploadFile = File(...)):
     print(file.read())
 
