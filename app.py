@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request,UploadFile,File
+from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 import sql
@@ -36,7 +36,7 @@ async def getWork(request: Request):
 
 
 @app.get('/authStaff')
-def authStaff(req: Request):
+async def authStaff(req: Request):
     if req.headers.get('username') and req.headers.get('password'):
         w = sql.AuthStaff(req.headers.get('username'),
                           password=req.headers.get('password'))
@@ -48,7 +48,7 @@ def authStaff(req: Request):
         return{"auth": False}
 
 @app.get('/addTeacher')
-def addTeacher(req:Request):
+async def addTeacher(req:Request):
     email,name,_class,section,username,password = req.headers.get('email'),req.headers.get('name'),req.headers.get('class'),req.headers.get('section'),req.headers.get('username'),req.headers.get('password')
     if (email and name and _class and section) and sql.AuthStaff(username=username,password=password):
         sql.newTeacher(email= email,name= name,_class = _class,section= section)
@@ -57,11 +57,13 @@ def addTeacher(req:Request):
         return{'status':False}
     
 @app.post('/addTeacherCsv')
-def addTeacherCsv(file:UploadFile = File(...)):
-    print(file.read())
+async def addTeacherCsv(file:UploadFile = File(...)):
+    content = await file.read()
+
+    print(content)
 
 @app.get('/allTeachers')
-def allTeachers(req: Request):
+async def allTeachers(req: Request):
     if sql.AuthStaff(username=req.headers.get('username'), password=req.headers.get('password')):
         return {'status':True,"teachers":sql.allTeachers()}
     else:
