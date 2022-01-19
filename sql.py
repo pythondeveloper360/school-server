@@ -249,3 +249,19 @@ def allTeachers():
     cursor.execute(sqlquery)
     data = cursor.fetchall()
     return [{'email': i[0], 'name':i[1], 'class':i[2], "section":i[3]} for i in data]
+
+
+# ! Deprecated
+def AddTeachersCsv(content: str):
+    lines = content.split('\n')
+    rdata = [tuple(i.split(',')) for i in lines]
+    print(rdata)
+    
+    sqlquery = sql.SQL('insert into teachers ({email},{name},{_class},{section}) values %s').format(
+        email = sql.Identifier("email"),
+        name= sql.Identifier("name"),
+        _class = sql.Identifier("class"),
+        section = sql.Identifier("section")
+    )
+    cursor.execute(sqlquery,(str(rdata),))
+    db.commit()
