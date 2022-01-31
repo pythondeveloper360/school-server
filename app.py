@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, Request, UploadFile
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 import sql
@@ -47,26 +47,26 @@ async def authStaff(req: Request):
     else:
         return{"auth": False}
 
+
 @app.get('/addTeacher')
-async def addTeacher(req:Request):
-    email,name,_class,section,username,password = req.headers.get('email'),req.headers.get('name'),req.headers.get('class'),req.headers.get('section'),req.headers.get('username'),req.headers.get('password')
-    if (email and name and _class and section) and sql.AuthStaff(username=username,password=password):
-        sql.newTeacher(email= email,name= name,_class = _class,section= section)
-        return {'status':True}
+async def addTeacher(req: Request):
+    email, name, _class, section, username, password = req.headers.get('email'), req.headers.get('name'), req.headers.get(
+        'class'), req.headers.get('section'), req.headers.get('username'), req.headers.get('password')
+    if (email and name and _class and section) and sql.AuthStaff(username=username, password=password):
+        sql.newTeacher(email=email, name=name, _class=_class, section=section)
+        return {'status': True}
     else:
-        return{'status':False}
-    
-@app.post('/addTeacherCsv')
-async def addTeacherCsv(file:UploadFile = File(...)):
-    content = await file.read()
-    print(str(content)[10])
+        return{'status': False}
+
+
+
 
 @app.get('/allTeachers')
 async def allTeachers(req: Request):
     if sql.AuthStaff(username=req.headers.get('username'), password=req.headers.get('password')):
-        return {'status':True,"teachers":sql.allTeachers()}
+        return {'status': True, "teachers": sql.allTeachers()}
     else:
-        return{'status':False}
+        return{'status': False}
 
 
 @app.get('/parentWorks')
@@ -134,6 +134,29 @@ async def onDayWork(req: Request):
         work = sql.checkOnDayWork(_class=cre.get(
             'class'), section=cre.get('section')) if cre else False
     return {'status': True} if work else {"status": False}
+
+
+@app.get('/getTPmessages')
+async def getTPmessages(req: Request):
+    conditions = [req.headers.get('teacherEmail'), req.headers.get(
+        'studentGR'), req.headers.get('parentPhone')]
+    if conditions[1] and any(*conditions[1:]):
+        work = sql.getTPMessages(
+            parentPhone=conditions[2], teacherEmail=conditions[0], studentGr=conditions[1])
+        return {"status":True,"messages":work} if work else {"status":False}
+    else:
+        return False
+
+@app.get('/getTPChats')
+async def getTPChats(req: Request):
+    conditions = [req.headers.get('teacherEmail'), req.headers.get(
+        'parentPhone'), req.headers.get('studentGr')]
+    if any(conditions):
+        work = sql.getTPChats(
+            teacherEmail=conditions[0], parentPhone=conditions[1], studentGr=conditions[2])
+        return {'chats': work, "status": True} if work else {"status": False}
+    else:
+        return {"status": False}
 
 
 @app.post('/uploadWork')

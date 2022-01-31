@@ -61,7 +61,7 @@ def getAllWorkStudent(gr):
         if data:
             for i in data:
                 rData.append({"id": i[0], "date": i[1].strftime(
-                    '%b %d %A'), "seen": checkSeenBy(seenBy=i[2], gr=gr)})
+                    '%b %d %A'), "seen": checkSeenBy(seenBy=i[2], gr=gr), 'section': cre.get('section'), 'class': cre.get('class')})
             return rData
         else:
             return False
@@ -105,22 +105,35 @@ def checkOnDayWork(_class, section, date=None):
     return True if data else False
 
 
+def getParentList(_class: str, section: str):
+    destiny = f"{_class}-{section}"
+    rData = []
+    sqlquery = sql.SQL('select phone from parents where %s = any(classes)')
+    cursor.execute(sqlquery, (destiny,))
+    data = cursor.fetchall()
+    if data:
+        for i in data:
+            rData.append(i[0])
+    print(rData)
+
+
 def insertWork(_class: str, section: str, hw: list, cw: list):
     _date = datetime.datetime.now()
     _id = idGenerator()
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
     sqlquery = sql.SQL(
-        'insert into work ({id},{date},{hw},{cw},{_class},{section}) values (%s,%s,%s,%s,%s,%s)').format(
+        'insert into work ({id},{date},{hw},{cw},{_class},{section},{parents}) values (%s,%s,%s,%s,%s,%s,%s)').format(
             id=sql.Identifier("id"),
             date=sql.Identifier("date"),
             _class=sql.Identifier("class"),
             hw=sql.Identifier('hw'),
             cw=sql.Identifier("cw"),
-            section=sql.Identifier("section")
+            section=sql.Identifier("section"),
+            parents=sql.Identifier("parents")
     )
     cursor.execute(sqlquery, (_id, _date.strftime('%Y-%m-%d'),
-                              dumps({"hw": hw}), dumps({"cw": cw}), _class, section.upper()))
+                              dumps({"hw": hw}), dumps({"cw": cw}), _class, section.upper(), getParentList(_class, section.upper())))
     db.commit()
     return {'work': True, "id": _id, 'date': _date.strftime('%b %d %A')}
     # TODO and this line
@@ -251,17 +264,57 @@ def allTeachers():
     return [{'email': i[0], 'name':i[1], 'class':i[2], "section":i[3]} for i in data]
 
 
-# ! Deprecated
-def AddTeachersCsv(content: str):
-    lines = content.split('\n')
-    rdata = [tuple(i.split(',')) for i in lines]
-    print(rdata)
-    
-    sqlquery = sql.SQL('insert into teachers ({email},{name},{_class},{section}) values %s').format(
-        email = sql.Identifier("email"),
-        name= sql.Identifier("name"),
-        _class = sql.Identifier("class"),
-        section = sql.Identifier("section")
-    )
-    cursor.execute(sqlquery,(str(rdata),))
-    db.commit()
+def getTPChats(parentPhone='', teacherEmail='', studentGr=''):
+    if all([parentPhone, checkParent(parentPhone)]):
+        sqlquery = sql.SQL('select {teacherEmail} from TPmessages where {parent} = %s').format(
+            teacherEmail=sql.Identifier("teacher"), parent=sql.Identifier("parent"))
+        cursor.execute(sqlquery, (parentPhone,))
+        data = cursor.fetchall()
+        return list(set([i[0] for i in data])) if data else []
+    elif teacherEmail:
+        sqlquery = sql.SQL('select {parent},{student} from TPmessages where {teacher} = %s').format(
+            parent=sql.Identifier("parent"), student=sql.Identifier("student"), teacher=sql.Identifier("teacher"))
+        cursor.execute(sqlquery, (teacherEmail,))
+        data = cursor.fetchall()
+        rl = []
+        for i in data:
+            if i[0]:
+                rl.append(i[0])
+        return list(set(rl))
+    elif studentGr:
+        sqlquery = sql.SQL('select {teacher} from TPmessages where {student} = %s').format(
+            teacher=sql.Identifier("teacher"), student=sql.Identifier("student"))
+        cursor.execute(sqlquery, (studentGr,))
+        data = cursor.fetchall()
+        return list(set([i[0] for i in data])) if data else []
+    else:
+        return False
+
+
+def getTPMessages(parentPhone='', teacherEmail='', studentGr=''):
+    if teacherEmail and parentPhone:
+        sqlquery = sql.SQL('select * from TPmessages where {parent} = %s and {teacher} = %s').format(
+            parent=sql.Identifier("parent"), teacher=sql.Identifier("teacher"))
+        cursor.execute(sqlquery, (parentPhone, teacherEmail))
+        data = cursor.fetchall()
+        return [{"id": i[0], 'msg':i[1], 'date':i[2], 'parentPhone':i[3], 'teacherEmail':i[4], 'by':i[5]} for i in data] if data else []
+    elif teacherEmail and studentGr:
+        sqlquery = sql.SQL('select * from TPmessages where {studentGr} = %s and {teacher} = %s').format(
+            studentGr=sql.Identifier("studentGr"), teacher=sql.Identifier("teacher"))
+        cursor.execute(sqlquery, (studentGr, teacherEmail))
+        data = cursor.fetchall()
+        return [{"id": i[0], 'msg':i[1], 'date':i[2], 'studentGr':i[6], 'teacherEmail':i[4], 'by':i[5]} for i in data] if data else []
+    else:
+        return False
+
+
+def sendTPmessage(parentPhone: str, teaherEmail: str, msg: str, by: str, date: str):
+    if all([checkParent(phone=parentPhone), by in ['teacher', 'parent']]):
+        sqlquery = sql.SQL('insert into TPmessages({id},{message},{parent},{teacher},{by},{date}) values(%s,%s,%s,%s,%s,%s)').format(id=sql.Identifier(
+            "id"), message=sql.Identifier("message"), parent=sql.Identifier("parent"), teacher=sql.Identifier("teacher"), by=sql.Identifier("by"))
+        cursor.execute(sqlquery, (idGenerator(), msg,
+                       parentPhone, teaherEmail, by, date))
+        db.commit()
+        return True
+    else:
+        return False
