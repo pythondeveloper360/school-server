@@ -188,7 +188,7 @@ def newTeacher(email: str, section: str, _class: str, name: str):
 
 def checkParent(phone):
     sqlquery = sql.SQL(
-        'select * from parents where {phone}  = %s').format(phone=sql.Identifier("phone"))
+        'select {phone} from parents where {phone}  = %s').format(phone=sql.Identifier("phone"))
     cursor.execute(sqlquery, (phone,))
     data = cursor.fetchall()
     return True if data else False
@@ -262,59 +262,47 @@ def allTeachers():
     cursor.execute(sqlquery)
     data = cursor.fetchall()
     return [{'email': i[0], 'name':i[1], 'class':i[2], "section":i[3]} for i in data]
+# ! need to uncomment after sometime
+
+# def getTPChats(parentPhone='', teacherEmail='', studentGr=''):
+#     if all([parentPhone, checkParent(parentPhone)]):
+#         sqlquery = sql.SQL('select {techerName},{teacherEmail} from TPmessages where {parent} = %s').format(
+#             teacherEmail=sql.Identifier("teacher"), parent=sql.Identifier("parent"), teacherName=sql.Identifier("name"))
+#         cursor.execute(sqlquery, (parentPhone,))
+#         data = cursor.fetchall()
+#         return list(set([{'name': i[0], "email":i[1]} for i in data])) if data else []
+#     elif teacherEmail:
+#         sqlquery = sql.SQL('select {parentname},{msg},{studentname},{parent},{student},{by},{msgTo},{forstudent} from TPmessages where {teacher} = %s').format(
+#             parent=sql.Identifier("parent"), student=sql.Identifier("student"), teacher=sql.Identifier("teacher"), msg=sql.Identifier("message"),
+#             studentname=sql.Identifier("studentname"), parentname=sql.Identifier("parentname"), msgTo=sql.Identifier("msgto"), by=sql.Identifier("by"))
+#         cursor.execute(sqlquery, (teacherEmail,))
+#         data = cursor.fetchall()
+#         rl = []
+#         for i in data:
+#             if i[5] in ['teacher', 'parent'] or i[6] in ['teacher', 'parent']:
+#                 rl.append(
+#                     {'parentName': i[0], 'parentPhone': i[3], "msg": i[1]})
+#             elif i[5] in ['student', 'teacher'] or i[6] in ['teacher', 'student']:
+#                 rl.append({'studentName': i[2], "studentGr": [4]})
+#         # return list(set(rl))
+#         return rl
+#     elif studentGr:
+#         sqlquery = sql.SQL('select {teacher} from TPmessages where {student} = %s').format(
+#             teacher=sql.Identifier("teacher"), student=sql.Identifier("student"))
+#         cursor.execute(sqlquery, (studentGr,))
+#         data = cursor.fetchall()
+#         return list(set([i[0] for i in data])) if data else []
+#     else:
+#         return False
 
 
-def getTPChats(parentPhone='', teacherEmail='', studentGr=''):
-    if all([parentPhone, checkParent(parentPhone)]):
-        sqlquery = sql.SQL('select {teacherEmail} from TPmessages where {parent} = %s').format(
-            teacherEmail=sql.Identifier("teacher"), parent=sql.Identifier("parent"))
-        cursor.execute(sqlquery, (parentPhone,))
-        data = cursor.fetchall()
-        return list(set([i[0] for i in data])) if data else []
-    elif teacherEmail:
-        sqlquery = sql.SQL('select {parent},{student} from TPmessages where {teacher} = %s').format(
-            parent=sql.Identifier("parent"), student=sql.Identifier("student"), teacher=sql.Identifier("teacher"))
-        cursor.execute(sqlquery, (teacherEmail,))
-        data = cursor.fetchall()
-        rl = []
-        for i in data:
-            if i[0]:
-                rl.append(i[0])
-        return list(set(rl))
-    elif studentGr:
-        sqlquery = sql.SQL('select {teacher} from TPmessages where {student} = %s').format(
-            teacher=sql.Identifier("teacher"), student=sql.Identifier("student"))
-        cursor.execute(sqlquery, (studentGr,))
-        data = cursor.fetchall()
-        return list(set([i[0] for i in data])) if data else []
-    else:
-        return False
-
-
-def getTPMessages(parentPhone='', teacherEmail='', studentGr=''):
-    if teacherEmail and parentPhone:
-        sqlquery = sql.SQL('select * from TPmessages where {parent} = %s and {teacher} = %s').format(
-            parent=sql.Identifier("parent"), teacher=sql.Identifier("teacher"))
-        cursor.execute(sqlquery, (parentPhone, teacherEmail))
-        data = cursor.fetchall()
-        return [{"id": i[0], 'msg':i[1], 'date':i[2], 'parentPhone':i[3], 'teacherEmail':i[4], 'by':i[5]} for i in data] if data else []
-    elif teacherEmail and studentGr:
-        sqlquery = sql.SQL('select * from TPmessages where {studentGr} = %s and {teacher} = %s').format(
-            studentGr=sql.Identifier("studentGr"), teacher=sql.Identifier("teacher"))
-        cursor.execute(sqlquery, (studentGr, teacherEmail))
-        data = cursor.fetchall()
-        return [{"id": i[0], 'msg':i[1], 'date':i[2], 'studentGr':i[6], 'teacherEmail':i[4], 'by':i[5]} for i in data] if data else []
-    else:
-        return False
-
-
-def sendTPmessage(parentPhone: str, teaherEmail: str, msg: str, by: str, date: str):
-    if all([checkParent(phone=parentPhone), by in ['teacher', 'parent']]):
-        sqlquery = sql.SQL('insert into TPmessages({id},{message},{parent},{teacher},{by},{date}) values(%s,%s,%s,%s,%s,%s)').format(id=sql.Identifier(
-            "id"), message=sql.Identifier("message"), parent=sql.Identifier("parent"), teacher=sql.Identifier("teacher"), by=sql.Identifier("by"))
-        cursor.execute(sqlquery, (idGenerator(), msg,
-                       parentPhone, teaherEmail, by, date))
-        db.commit()
-        return True
-    else:
-        return False
+# def sendTPmessage(teaherEmail: str, msg: str, by: str, date: str, forStudent: str, studentGr: str = '', parentPhone: str = ''):
+#     if all([checkParent(phone=parentPhone), by in ['teacher', 'parent'], forStudent]):
+#         sqlquery = sql.SQL('insert into TPmessages({id},{message},{parent},{teacher},{by},{date},{forStudent}) values(%s,%s,%s,%s,%s,%s,%s)').format(id=sql.Identifier(
+#             "id"), message=sql.Identifier("message"), parent=sql.Identifier("parent"), teacher=sql.Identifier("teacher"), by=sql.Identifier("by"), forStudent=sql.Identifier("forstudent"))
+#         cursor.execute(sqlquery, (idGenerator(), msg,
+#                        parentPhone, teaherEmail, by, date, forStudent))
+#         db.commit()
+#         return True
+#     else:
+#         return False
