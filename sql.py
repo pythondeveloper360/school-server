@@ -1,4 +1,5 @@
 import datetime
+import os
 import random
 from json import dumps
 
@@ -6,11 +7,11 @@ from psycopg2 import connect, sql
 
 # Server
 db = connect(
-    host='ec2-34-204-58-13.compute-1.amazonaws.com',
-    port='5432',
-    user='qabfwlyhrismmv',
-    database='d52fn9luqlu0bq',
-    password='7bb22ef7886bc5b2bd31a2e83c28ffc3ef1bec7ea038fca50bb04d720386121d'
+    host=os.environ.get('host'),
+    port=os.environ.get('port'),
+    user=os.environ.get('user'),
+    database=os.environ.get('database'),
+    password=os.environ.get('password')
 )
 # db = connect(
 #     host='localhost',
