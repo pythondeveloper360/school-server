@@ -7,8 +7,8 @@ from psycopg2 import connect, sql
 
 # Server
 db = connect(
-    host=os.environ.get('host'),
     port=os.environ.get('port'),
+    host=os.environ.get('host'),
     user=os.environ.get('user'),
     database=os.environ.get('database'),
     password=os.environ.get('password')
