@@ -7,15 +7,15 @@ from json import dumps
 from psycopg2 import connect, sql
 
 # Server
-data = json.loads(open('credentials.json', 'r').read())
-
-db = connect(
-    port=data.get('port'),
-    host=data.get('host'),
-    user=data.get('user'),
-    database=data.get('database'),
-    password=data.get('password')
-)
+with open('*p.txt', 'r') as f:
+    password = f.read()
+    db = connect(
+        port=5432,
+        host='ec2-34-204-58-13.compute-1.amazonaws.com',
+        user="qabfwlyhrismmv",
+        database="d52fn9luqlu0bq",
+        password=password
+    )
 # db = connect(
 #     host='localhost',
 #     port='5432',

@@ -1,6 +1,11 @@
+
+import os
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
+with open("*p.txt",'w') as f:
+    f.write(os.environ.get('password'))
 import sql
 
 app = FastAPI()
@@ -57,8 +62,6 @@ async def addTeacher(req: Request):
         return {'status': True}
     else:
         return{'status': False}
-
-
 
 
 @app.get('/allTeachers')
