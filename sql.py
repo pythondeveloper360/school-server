@@ -10,11 +10,11 @@ from psycopg2 import connect, sql
 data = json.loads(open('credentials.json', 'r').read())
 
 db = connect(
-    port=os.environ.get(data.get('port')),
-    host=os.environ.get(data.get('host')),
-    user=os.environ.get(data.get('user')),
-    database=os.environ.get(data.get('database')),
-    password=os.environ.get(data.get('password'))
+    port=data.get('port'),
+    host=data.get('host'),
+    user=data.get('user'),
+    database=data.get('database'),
+    password=data.get('password')
 )
 # db = connect(
 #     host='localhost',
