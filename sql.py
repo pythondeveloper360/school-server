@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 import random
 from json import dumps
@@ -6,12 +7,14 @@ from json import dumps
 from psycopg2 import connect, sql
 
 # Server
+data = json.loads(open('credentials.json', 'r').read())
+
 db = connect(
-    port=os.environ.get('port'),
-    host=os.environ.get('host'),
-    user=os.environ.get('user'),
-    database=os.environ.get('database'),
-    password=os.environ.get('password')
+    port=os.environ.get(data.get('port')),
+    host=os.environ.get(data.get('host')),
+    user=os.environ.get(data.get('user')),
+    database=os.environ.get(data.get('database')),
+    password=os.environ.get(data.get('password'))
 )
 # db = connect(
 #     host='localhost',
