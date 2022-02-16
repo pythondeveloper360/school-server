@@ -3,10 +3,11 @@ import json
 import os
 import random
 from json import dumps
-
+import os
 from psycopg2 import connect, sql
 
 # Server
+print(os.environ.get('password'))
 with open('*p.txt', 'r') as f:
     password = f.read()
     db = connect(
