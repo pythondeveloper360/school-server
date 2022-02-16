@@ -43,7 +43,7 @@ def getAllWork(_class: str, section: str):
 
     cursor.execute(sqlquery, (_class, section))
     data = cursor.fetchall()
-    return [{"id": i[0], "date":i[1].strftime('%b %d %A')} for i in data[::-1]] if data else False
+    return [{"id": i[0], "date":i[1].strftime('%b %d %A')} for i in data] if data else False
 
 
 def getAllWorkStudent(gr):
@@ -218,7 +218,7 @@ def getAllWorkForParent(phone):
     data = cursor.fetchall()
     rList = [{'id': i[0], 'date':i[1].strftime(
         '%b %d %A'), 'class':i[2], "section":i[3]} for i in data]
-    return rList[::-1]
+    return rList
 
 
 def seenWork(id, by):
