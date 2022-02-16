@@ -43,7 +43,7 @@ def getAllWork(_class: str, section: str):
 
     cursor.execute(sqlquery, (_class, section))
     data = cursor.fetchall()
-    return [{"id": i[0], "date":i[1].strftime('%b %d %A')} for i in data][::-1] if data else False
+    return [{"id": i[0], "date":i[1].strftime('%b %d %A')} for i in data[::-1]] if data else False
 
 
 def getAllWorkStudent(gr):
