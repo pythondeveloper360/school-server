@@ -3,7 +3,7 @@ import json
 import os
 import random
 from json import dumps
-import os
+
 from psycopg2 import connect, sql
 
 # Server
@@ -116,7 +116,7 @@ def getParentList(_class: str, section: str):
     if data:
         for i in data:
             rData.append(i[0])
-    print(rData)
+    return rData
 
 
 def insertWork(_class: str, section: str, hw: list, cw: list):
