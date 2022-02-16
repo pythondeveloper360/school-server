@@ -34,7 +34,7 @@ def idGenerator(_range: int = 10):
 
 
 def getAllWork(_class: str, section: str):
-    sqlquery = sql.SQL('select {id},{date} from work where {_class} = %s and {section} = %s').format(
+    sqlquery = sql.SQL('select {id},{date} from work where {_class} = %s and {section} = %s order by {date} DESC').format(
         _class=sql.Identifier("class"),
         section=sql.Identifier("section"),
         id=sql.Identifier("id"),
@@ -50,7 +50,7 @@ def getAllWorkStudent(gr):
     rData = []
     cre = getCredential(gr=gr)
     if cre:
-        sqlquery = sql.SQL('select {id},{date},{seenBy} from work where {_class} = %s and {section} = %s').format(
+        sqlquery = sql.SQL('select {id},{date},{seenBy} from work where {_class} = %s and {section} = %s order by {date} DESC').format(
             _class=sql.Identifier("class"),
             section=sql.Identifier("section"),
             id=sql.Identifier("id"),
@@ -64,7 +64,7 @@ def getAllWorkStudent(gr):
             for i in data:
                 rData.append({"id": i[0], "date": i[1].strftime(
                     '%b %d %A'), "seen": checkSeenBy(seenBy=i[2], gr=gr), 'section': cre.get('section'), 'class': cre.get('class')})
-            return rData[::-1]
+            return rData
         else:
             return False
     else:
@@ -208,7 +208,7 @@ def createParent(phone, children: list):
 
 
 def getAllWorkForParent(phone):
-    sqlquery = sql.SQL('select {id},{date},{_class},{section} from work where %s = any(parents)').format(
+    sqlquery = sql.SQL('select {id},{date},{_class},{section} from work where %s = any(parents) order by {date} DESC').format(
         id=sql.Identifier("id"),
         date=sql.Identifier("date"),
         _class=sql.Identifier("class"),
