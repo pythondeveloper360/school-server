@@ -7,16 +7,13 @@ import os
 from psycopg2 import connect, sql
 
 # Server
-print(os.environ.get('password'))
-with open('*p.txt', 'r') as f:
-    password = f.read()
-    db = connect(
-        port=5432,
-        host='ec2-34-204-58-13.compute-1.amazonaws.com',
-        user="qabfwlyhrismmv",
-        database="d52fn9luqlu0bq",
-        password=password
-    )
+db = connect(
+    port=5432,
+    host='ec2-34-204-58-13.compute-1.amazonaws.com',
+    user="qabfwlyhrismmv",
+    database="d52fn9luqlu0bq",
+    password=os.environ.get('password')
+)
 # db = connect(
 #     host='localhost',
 #     port='5432',
