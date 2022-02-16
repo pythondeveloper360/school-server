@@ -91,7 +91,7 @@ def getWorkWithId(_id: str, gr=None):
     data = cursor.fetchone()
     if gr:
         seenWork(_id, gr)
-    return {'id': data[0], 'date': data[1].strftime('%b %d %A'), 'hw': data[2]['hw'], 'cw': data[3]['cw'], 'time': data[4].strftime('%-I:%M %p') if data[4] else ''} if data else False
+    return {'id': data[0], 'date': data[1], 'hw': data[2]['hw'], 'cw': data[3]['cw'], 'time': data[4].strftime('%-I:%M %p') if data[4] else ''} if data else False
 
 
 def checkOnDayWork(_class, section, date=None):
