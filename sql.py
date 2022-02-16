@@ -95,9 +95,10 @@ def getWorkWithId(_id: str, gr=None):
 
 
 def checkOnDayWork(_class, section, date=None):
-    date = datetime.datetime.now() if not date else date
-    t = datetime.timedelta(hours=10)
-    date = date+t
+    if not date:
+        date = datetime.datetime.now() if not date else date
+        t = datetime.timedelta(hours=10)
+        date = date+t
     sqlquery = sql.SQL('select id from work where {date} = %s and {_class} = %s and {section} = %s').format(
         date=sql.Identifier("date"),
         _class=sql.Identifier("class"),

@@ -133,7 +133,7 @@ async def onDayWork(req: Request):
     elif req.headers.get('email'):
         cre = sql.getTeacherCredential(req.headers.get('email'))
         work = sql.checkOnDayWork(_class=cre.get(
-            'class'), section=cre.get('section')) if cre else False
+            'class'), section=cre.get('section'),date = req.headers.get('date')) if cre else False
     return {'status': True} if work else {"status": False}
 
 
