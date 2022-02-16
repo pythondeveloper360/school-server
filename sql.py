@@ -12,7 +12,7 @@ db = connect(
     host='ec2-34-204-58-13.compute-1.amazonaws.com',
     user="qabfwlyhrismmv",
     database="d52fn9luqlu0bq",
-    password=os.environ.get('password')
+    password="7bb22ef7886bc5b2bd31a2e83c28ffc3ef1bec7ea038fca50bb04d720386121d"
 )
 # db = connect(
 #     host='localhost',
@@ -64,7 +64,7 @@ def getAllWorkStudent(gr):
             for i in data:
                 rData.append({"id": i[0], "date": i[1].strftime(
                     '%b %d %A'), "seen": checkSeenBy(seenBy=i[2], gr=gr), 'section': cre.get('section'), 'class': cre.get('class')})
-            return rData
+            return rData[::-1]
         else:
             return False
     else:
@@ -218,7 +218,7 @@ def getAllWorkForParent(phone):
     data = cursor.fetchall()
     rList = [{'id': i[0], 'date':i[1].strftime(
         '%b %d %A'), 'class':i[2], "section":i[3]} for i in data]
-    return rList
+    return rList[::-1]
 
 
 def seenWork(id, by):
