@@ -81,17 +81,16 @@ def checkSeenBy(gr: str, seenBy: list = []):
 
 def getWorkWithId(_id: str, gr=None):
     sqlquery = sql.SQL(
-        'select {_id},{date},{hw},{cw},{time} from work where {_id} = %s').format(
+        'select {_id},{date},{work}, from work where {_id} = %s').format(
             _id=sql.Identifier("id"),
             date=sql.Identifier("date"),
-            hw=sql.Identifier("hw"),
-            cw=sql.Identifier("cw"),
+            work=sql.Identifier("work"),
             time=sql.Identifier("time"))
     cursor.execute(sqlquery, (_id,))
     data = cursor.fetchone()
     if gr:
         seenWork(_id, gr)
-    return {'id': data[0], 'date': data[1], 'hw': data[2]['hw'], 'cw': data[3]['cw'], 'time': data[4].strftime('%-I:%M %p') if data[4] else ''} if data else False
+    return {'id': data[0], 'date': data[1], 'work': data[2]} if data else False
 
 
 def checkOnDayWork(_class, section, date=None):
@@ -120,25 +119,24 @@ def getParentList(_class: str, section: str):
     return rData
 
 
-def insertWork(_class: str, section: str, hw: list, cw: list):
-    _date = datetime.datetime.now()
+def insertWork(_class: str, section: str, work: dict, date=None):
+    _date = date or datetime.datetime.now()
     _id = idGenerator()
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
     sqlquery = sql.SQL(
-        'insert into work ({id},{date},{hw},{cw},{_class},{section},{parents}) values (%s,%s,%s,%s,%s,%s,%s)').format(
+        'insert into work ({id},{date},{work},{_class},{section},{parents}) values (%s,%s,%s,%s,%s,%s)').format(
             id=sql.Identifier("id"),
             date=sql.Identifier("date"),
             _class=sql.Identifier("class"),
-            hw=sql.Identifier('hw'),
-            cw=sql.Identifier("cw"),
             section=sql.Identifier("section"),
+            work=sql.Identifier("work"),
             parents=sql.Identifier("parents")
     )
-    cursor.execute(sqlquery, (_id, _date.strftime('%Y-%m-%d'),
-                              dumps({"hw": hw}), dumps({"cw": cw}), _class, section.upper(), getParentList(_class, section.upper())))
+    cursor.execute(sqlquery, (_id, _date.strftime('%Y-%m-%d'), dumps(work),
+                   _class, section.upper(), getParentList(_class, section.upper())))
     db.commit()
-    return {'work': True, "id": _id, 'date': _date.strftime('%b %d %A')}
+    return {'work': True, "id": _id, 'date': _date}
     # TODO and this line
     # else:
     #     return False
