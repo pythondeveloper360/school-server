@@ -81,7 +81,7 @@ def checkSeenBy(gr: str, seenBy: list = []):
 
 def getWorkWithId(_id: str, gr=None):
     sqlquery = sql.SQL(
-        'select {_id},{date},{works}, from work where {_id} = %s').format(
+        'select {_id},{date},{works} from work where {_id} = %s').format(
             _id=sql.Identifier("id"),
             date=sql.Identifier("date"),
             works=sql.Identifier("works"),
