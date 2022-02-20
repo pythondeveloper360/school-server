@@ -22,6 +22,7 @@ app.add_middleware(
 async def getWork(request: Request):
     gr = request.headers.get('gr')
     email = request.headers.get('email')
+    phone = request.headers.get('phone')
     if gr:
         if gr:
             return {'works': sql.getAllWorkStudent(gr=gr)}
@@ -34,6 +35,8 @@ async def getWork(request: Request):
             return{"works": sql.getAllWork(credentials['class'], credentials['section'])}
         else:
             return {'status': 'error'}
+    
+        
     else:
         return {'status': 'error'}
 
