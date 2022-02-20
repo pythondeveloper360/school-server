@@ -93,7 +93,7 @@ async def workById(req: Request):
 
         else:
             work = sql.getWorkWithId(req.headers.get('id'))
-    return work if work else {'status': 'error'}
+    return {"status":True, "work":work} if work else {'status': 'error'}
 
 
 @app.get('/auth')
