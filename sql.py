@@ -120,7 +120,6 @@ def getParentList(_class: str, section: str):
 
 
 def insertWork(_class: str, section: str, work: dict, date=None):
-    _date = date or datetime.datetime.now()
     _id = idGenerator()
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
@@ -133,10 +132,10 @@ def insertWork(_class: str, section: str, work: dict, date=None):
             works=sql.Identifier("works"),
             parents=sql.Identifier("parents")
     )
-    cursor.execute(sqlquery, (_id, _date.strftime('%Y-%m-%d'), dumps(work),
+    cursor.execute(sqlquery, (_id, date.strftime('%Y-%m-%d'), dumps(work),
                    _class, section.upper(), getParentList(_class, section.upper())))
     db.commit()
-    return {'work': True, "id": _id, 'date': _date}
+    return {'work': True, "id": _id, 'date': date}
     # TODO and this line
     # else:
     #     return False

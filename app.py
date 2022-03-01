@@ -171,7 +171,7 @@ async def uploadWork(req: Request):
             teacher = sql.getTeacherCredential(jData.get('email'))
             if teacher:
                 work = sql.insertWork(section=teacher.get('section'), _class=teacher.get(
-                    'class'), work=jData.get('work'))
+                    'class'), work=jData.get('work'),date= jData.get('date'))
                 if work:
                     return work
                 else:
