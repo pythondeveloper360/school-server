@@ -1,7 +1,5 @@
-import datetime
-import json
-import os
 import random
+from datetime import datetime
 from json import dumps
 
 from psycopg2 import connect, sql
@@ -119,7 +117,7 @@ def getParentList(_class: str, section: str):
     return rData
 
 
-def insertWork(_class: str, section: str, work: dict, date=None):
+def insertWork(_class: str, section: str, work: dict, date):
     _id = idGenerator()
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
@@ -135,7 +133,7 @@ def insertWork(_class: str, section: str, work: dict, date=None):
     cursor.execute(sqlquery, (_id, date.strftime('%Y-%m-%d'), dumps(work),
                    _class, section.upper(), getParentList(_class, section.upper())))
     db.commit()
-    return {'work': True, "id": _id, 'date': date}
+    return {'work': True, "id": _id, 'date': datetime(date)}
     # TODO and this line
     # else:
     #     return False
