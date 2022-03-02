@@ -133,6 +133,8 @@ def insertWork(_class: str, section: str, work: dict, date):
     cursor.execute(sqlquery, (_id, date.strftime('%Y-%m-%d'), dumps(work),
                    _class, section.upper(), getParentList(_class, section.upper())))
     db.commit()
+    print(date)
+    print(type(date))
     return {'work': True, "id": _id, 'date': datetime(date)}
     # TODO and this line
     # else:
