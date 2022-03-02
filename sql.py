@@ -124,7 +124,7 @@ def insertWork(_class: str, section: str, work: dict, date):
     # if not checkOnDayWork(_date):
     print(type(date))
     print(date)
-    _date = datetime.strptime(date, "%d/%m/%Y, %X %p")
+    _date = datetime.strptime(date, "%d/%m/%Y")
     sqlquery = sql.SQL(
         'insert into work ({id},{date},{works},{_class},{section},{parents}) values (%s,%s,%s,%s,%s,%s)').format(
             id=sql.Identifier("id"),
