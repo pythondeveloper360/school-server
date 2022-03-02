@@ -119,7 +119,6 @@ def getParentList(_class: str, section: str):
 
 def insertWork(_class: str, section: str, work: dict, date):
     _id = idGenerator()
-    date = datetime(date)
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
     sqlquery = sql.SQL(
