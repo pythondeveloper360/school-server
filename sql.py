@@ -119,6 +119,7 @@ def getParentList(_class: str, section: str):
 
 def insertWork(_class: str, section: str, work: dict, date):
     _id = idGenerator()
+    print(type(date))
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
     _date = datetime(date.get('year'),date.get('month'),date.get('date'))
