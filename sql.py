@@ -121,6 +121,8 @@ def insertWork(_class: str, section: str, work: dict, date):
     _id = idGenerator()
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
+    print(date)
+    print(type(date))
     sqlquery = sql.SQL(
         'insert into work ({id},{date},{works},{_class},{section},{parents}) values (%s,%s,%s,%s,%s,%s)').format(
             id=sql.Identifier("id"),
@@ -133,8 +135,7 @@ def insertWork(_class: str, section: str, work: dict, date):
     cursor.execute(sqlquery, (_id, date.strftime('%Y-%m-%d'), dumps(work),
                    _class, section.upper(), getParentList(_class, section.upper())))
     db.commit()
-    print(date)
-    print(type(date))
+    
     return {'work': True, "id": _id, 'date': date}
     # TODO and this line
     # else:
