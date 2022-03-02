@@ -122,9 +122,9 @@ def insertWork(_class: str, section: str, work: dict, date):
     
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
-    _date = datetime(date.get('year'),date.get('month'),date.get('date'))
     print(type(date))
     print(date)
+    _date = datetime(date.get('year'),date.get('month'),date.get('date'))
     sqlquery = sql.SQL(
         'insert into work ({id},{date},{works},{_class},{section},{parents}) values (%s,%s,%s,%s,%s,%s)').format(
             id=sql.Identifier("id"),
