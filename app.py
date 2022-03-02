@@ -166,7 +166,6 @@ async def onDayWork(req: Request):
 @app.post('/uploadWork')
 async def uploadWork(req: Request):
     jData = await req.json()
-    print(type(jData.get('date')))
     if jData.get('email') and jData.get('work') and jData.get('password'):
         if sql.authTeacher(jData.get('email'), jData.get('password')):
             teacher = sql.getTeacherCredential(jData.get('email'))

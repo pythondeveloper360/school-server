@@ -97,7 +97,7 @@ def checkOnDayWork(_class, section, date):
         date=sql.Identifier("date"),
         _class=sql.Identifier("class"),
         section=sql.Identifier("section"))
-    cursor.execute(sqlquery, (_date, _class, section))
+    cursor.execute(sqlquery, (_date.strftime('%Y-%m-%d'), _class, section))
     data = cursor.fetchone()
     return True if data else False
 
@@ -119,8 +119,6 @@ def insertWork(_class: str, section: str, work: dict, date):
 
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
-    print(type(date))
-    print(date)
     _date = datetime.strptime(date, "%d/%m/%y")
     sqlquery = sql.SQL(
         'insert into work ({id},{date},{works},{_class},{section},{parents}) values (%s,%s,%s,%s,%s,%s)').format(
