@@ -91,16 +91,13 @@ def getWorkWithId(_id: str, gr=None):
     return {'id': data[0], 'date': data[1], 'work': data[2]} if data else False
 
 
-def checkOnDayWork(_class, section, date=None):
-    if not date:
-        date = datetime.datetime.now() if not date else date
-        t = datetime.timedelta(hours=10)
-        date = date+t
+def checkOnDayWork(_class, section, date):
+    _date = datetime.strptime(date,'%d/%m/%y')
     sqlquery = sql.SQL('select id from work where {date} = %s and {_class} = %s and {section} = %s').format(
         date=sql.Identifier("date"),
         _class=sql.Identifier("class"),
         section=sql.Identifier("section"))
-    cursor.execute(sqlquery, (date, _class, section))
+    cursor.execute(sqlquery, (_date, _class, section))
     data = cursor.fetchone()
     return True if data else False
 
