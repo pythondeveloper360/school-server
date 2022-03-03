@@ -92,7 +92,7 @@ def getWorkWithId(_id: str, gr=None):
 
 
 def checkOnDayWork(_class, section, date):
-    _date = datetime.strptime(date,'%d/%m/%y')
+    _date = datetime.strptime(date,'%d/%m/%Y')
     sqlquery = sql.SQL('select id from work where {date} = %s and {_class} = %s and {section} = %s').format(
         date=sql.Identifier("date"),
         _class=sql.Identifier("class"),
