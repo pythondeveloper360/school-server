@@ -128,7 +128,6 @@ async def authStudent(req: Request):
 @app.get('/onDayWork')
 async def onDayWork(req: Request):
     work = False
-    print(req.headers)
     if req.headers.get('gr'):
         cre = sql.getCredential(req.headers.get('gr'))
         work = sql.checkOnDayWork(_class=cre.get(
@@ -137,8 +136,7 @@ async def onDayWork(req: Request):
         cre = sql.getTeacherCredential(req.headers.get('email'))
         work = sql.checkOnDayWork(_class=cre.get(
             'class'), section=cre.get('section'), date=req.headers.get('date')) if cre else False
-        print(cre)
-        print(work)
+
     return {'status': True} if work else {"status": False}
 
 
