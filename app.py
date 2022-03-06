@@ -35,8 +35,7 @@ async def getWork(request: Request):
             return{"works": sql.getAllWork(credentials['class'], credentials['section'])}
         else:
             return {'status': 'error'}
-    
-        
+
     else:
         return {'status': 'error'}
 
@@ -93,7 +92,7 @@ async def workById(req: Request):
 
         else:
             work = sql.getWorkWithId(req.headers.get('id'))
-    return {"status":True, "work":work} if work else {'status': 'error'}
+    return {"status": True, "work": work} if work else {'status': 'error'}
 
 
 @app.get('/auth')
@@ -136,7 +135,9 @@ async def onDayWork(req: Request):
     elif req.headers.get('email'):
         cre = sql.getTeacherCredential(req.headers.get('email'))
         work = sql.checkOnDayWork(_class=cre.get(
-            'class'), section=cre.get('section'),date = req.headers.get('date')) if cre else False
+            'class'), section=cre.get('section'), date=req.headers.get('date')) if cre else False
+        print(cre)
+        print(work)
     return {'status': True} if work else {"status": False}
 
 
@@ -171,7 +172,7 @@ async def uploadWork(req: Request):
             teacher = sql.getTeacherCredential(jData.get('email'))
             if teacher:
                 work = sql.insertWork(section=teacher.get('section'), _class=teacher.get(
-                    'class'), work=jData.get('work'),date= jData.get('date'))
+                    'class'), work=jData.get('work'), date=jData.get('date'))
                 if work:
                     return work
                 else:
