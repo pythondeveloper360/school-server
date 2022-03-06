@@ -128,6 +128,7 @@ async def authStudent(req: Request):
 @app.get('/onDayWork')
 async def onDayWork(req: Request):
     work = False
+    print(req.headers)
     if req.headers.get('gr'):
         cre = sql.getCredential(req.headers.get('gr'))
         work = sql.checkOnDayWork(_class=cre.get(
