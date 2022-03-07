@@ -1,13 +1,12 @@
 
 import os
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request,WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 
 import sql
 
 app = FastAPI()
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -162,6 +161,12 @@ async def onDayWork(req: Request):
 #     else:
 #         return {"status": False}
 
+@app.websocket('/ws')
+async def websocket_endpoint(websocket :WebSocket):
+    await websocket.accept()
+    while True:
+        data = websocket.receive_json()
+        print(data)
 
 @app.post('/uploadWork')
 async def uploadWork(req: Request):
