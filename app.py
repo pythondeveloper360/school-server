@@ -167,7 +167,7 @@ async def websocket_endpoint(websocket :WebSocket):
     while True:
         data = await websocket.receive_json()
         if (data):
-            print(loads(data))
+            print(data)
         # print(data)
 
 @app.post('/uploadWork')
