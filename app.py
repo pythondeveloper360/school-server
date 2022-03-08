@@ -165,7 +165,7 @@ async def onDayWork(req: Request):
 async def websocket_endpoint(websocket :WebSocket):
     await websocket.accept()
     while True:
-        data = websocket.receive_json()
+        data = await websocket.receive_json()
         # print(data)
 
 @app.post('/uploadWork')
