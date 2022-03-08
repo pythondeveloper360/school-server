@@ -163,7 +163,6 @@ async def onDayWork(req: Request):
 
 @app.websocket('/ws')
 async def websocket_endpoint(websocket :WebSocket):
-    print('fdghgfdsa')
     await websocket.accept()
     while True:
         data = websocket.receive_json()
