@@ -1,8 +1,8 @@
 
-import os
 
 from fastapi import FastAPI, Request,WebSocket
 from fastapi.middleware.cors import CORSMiddleware
+from json import loads
 
 import sql
 
@@ -167,7 +167,7 @@ async def websocket_endpoint(websocket :WebSocket):
     while True:
         data = await websocket.receive_json()
         if (data):
-            print(data)
+            print(loads(data))
         # print(data)
 
 @app.post('/uploadWork')
