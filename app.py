@@ -1,8 +1,9 @@
 
 
-from fastapi import FastAPI, Request,WebSocket
-from fastapi.middleware.cors import CORSMiddleware
 from json import loads
+
+from fastapi import FastAPI, Request, WebSocket
+from fastapi.middleware.cors import CORSMiddleware
 
 import sql
 
@@ -80,6 +81,12 @@ async def getParentWorks(req: Request):
             return {"status": False}
     else:
         return {"status": False}
+@app.get('/seenByStudent')
+async def seenByStudents(req:Request):
+    if req.headers.get('id'):
+        return {'students':sql.seenByStudents(req.headers.get('id')),"status":True}
+    else:
+        return {"status":False}
 
 
 @app.get('/workById')
@@ -167,8 +174,8 @@ async def websocket_endpoint(websocket :WebSocket):
     while True:
         data = await websocket.receive_json()
         if (data):
-            print(data)
-        # print(data)
+            ...
+            # print(data)
 
 @app.post('/uploadWork')
 async def uploadWork(req: Request):

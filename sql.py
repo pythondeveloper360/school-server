@@ -216,6 +216,13 @@ def getAllWorkForParent(phone):
         '%b %d %A'), 'class':i[2], "section":i[3]} for i in data]
     return rList
 
+def seenByStudents(id):
+    sqlquery = sql.SQL('select {seenBy} from work where id = %s').format(
+        seenBy = sql.Identifier("seenby")
+        )
+    cursor.execute(sqlquery,(id,))
+    data = cursor.fetchone()
+    return data[0]
 
 def seenWork(id, by):
     sqlquery = sql.SQL('select {seenBy} from work where {id} = %s').format(
