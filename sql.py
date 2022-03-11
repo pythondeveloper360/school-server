@@ -222,7 +222,7 @@ def seenByStudents(id):
         )
     cursor.execute(sqlquery,(id,))
     data = cursor.fetchone()
-    return data[0]
+    return data[0] if data[0] else [] 
 
 def seenWork(id, by):
     sqlquery = sql.SQL('select {seenBy} from work where {id} = %s').format(
