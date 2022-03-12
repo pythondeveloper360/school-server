@@ -180,6 +180,7 @@ async def websocket_endpoint(websocket :WebSocket):
 @app.post('/uploadWork')
 async def uploadWork(req: Request):
     jData = await req.json()
+    print(jData)
     if jData.get('email') and jData.get('work') and jData.get('password'):
         if sql.authTeacher(jData.get('email'), jData.get('password')):
             teacher = sql.getTeacherCredential(jData.get('email'))
