@@ -92,7 +92,7 @@ def getWorkWithId(_id: str, gr=None):
 
 
 def checkOnDayWork(_class, section, date):
-    _date = datetime.strptime(date, '%d/%m/%y')
+    _date = datetime.strptime(date, '%m/%d/%y')
     sqlquery = sql.SQL('select id from work where {date} = %s and {_class} = %s and {section} = %s').format(
         date=sql.Identifier("date"),
         _class=sql.Identifier("class"),
@@ -119,7 +119,7 @@ def insertWork(_class: str, section: str, work: dict, date):
 
     # TODO Add this line in deployment
     # if not checkOnDayWork(_date):
-    _date = datetime.strptime(date, "%d/%m/%y")
+    _date = datetime.strptime(date, "%m/%d/%y")
     sqlquery = sql.SQL(
         'insert into work ({id},{date},{works},{_class},{section},{parents}) values (%s,%s,%s,%s,%s,%s)').format(
             id=sql.Identifier("id"),
