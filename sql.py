@@ -92,7 +92,7 @@ def getWorkWithId(_id: str, gr=None):
 
 
 def checkOnDayWork(_class, section, date):
-    _date = datetime.strptime(date, '%m/%d/%y')
+    _date = datetime.strptime(date, '%a %b %d %Y')
     sqlquery = sql.SQL('select id from work where {date} = %s and {_class} = %s and {section} = %s').format(
         date=sql.Identifier("date"),
         _class=sql.Identifier("class"),
@@ -216,13 +216,15 @@ def getAllWorkForParent(phone):
         '%b %d %A'), 'class':i[2], "section":i[3]} for i in data]
     return rList
 
+
 def seenByStudents(id):
     sqlquery = sql.SQL('select {seenBy} from work where id = %s').format(
-        seenBy = sql.Identifier("seenby")
-        )
-    cursor.execute(sqlquery,(id,))
+        seenBy=sql.Identifier("seenby")
+    )
+    cursor.execute(sqlquery, (id,))
     data = cursor.fetchone()
-    return data[0] if data[0] else [] 
+    return data[0] if data[0] else []
+
 
 def seenWork(id, by):
     sqlquery = sql.SQL('select {seenBy} from work where {id} = %s').format(
