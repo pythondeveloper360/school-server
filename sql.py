@@ -3,6 +3,9 @@ from datetime import datetime
 from json import dumps
 
 from psycopg2 import connect, sql
+import psycopg2
+
+
 
 # Server
 db = connect(

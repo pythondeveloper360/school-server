@@ -81,12 +81,14 @@ async def getParentWorks(req: Request):
             return {"status": False}
     else:
         return {"status": False}
+
+
 @app.get('/seenByStudent')
-async def seenByStudents(req:Request):
+async def seenByStudents(req: Request):
     if req.headers.get('id'):
-        return {'students':sql.seenByStudents(req.headers.get('id')),"status":True}
+        return {'students': sql.seenByStudents(req.headers.get('id')), "status": True}
     else:
-        return {"status":False}
+        return {"status": False}
 
 
 @app.get('/workById')
@@ -162,13 +164,14 @@ async def onDayWork(req: Request):
 #         return {"status": False}
 
 @app.websocket('/ws')
-async def websocket_endpoint(websocket :WebSocket):
+async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_json()
         if (data):
             ...
             # print(data)
+
 
 @app.post('/uploadWork')
 async def uploadWork(req: Request):
@@ -181,7 +184,7 @@ async def uploadWork(req: Request):
                 work = sql.insertWork(section=teacher.get('section'), _class=teacher.get(
                     'class'), work=jData.get('work'), date=jData.get('date'))
                 if work:
-                    return work
+                    return {'status':True,"data":work}
                 else:
                     return{"status": False}
             else:
