@@ -1,28 +1,18 @@
+import os
 import random
 from datetime import datetime
 from json import dumps
 
 from psycopg2 import connect, sql
-import psycopg2
-
-
 
 # Server
 db = connect(
-    port=5432,
-    host='ec2-34-204-58-13.compute-1.amazonaws.com',
-    user="qabfwlyhrismmv",
-    database="d52fn9luqlu0bq",
-    password="7bb22ef7886bc5b2bd31a2e83c28ffc3ef1bec7ea038fca50bb04d720386121d"
+    port=os.environ.get('port'),
+    host=os.environ.get('host'),
+    user=os.environ.get('user'),
+    database=os.environ.get('database'),
+    password=os.environ.get('password')
 )
-# db = connect(
-#     host='localhost',
-#     port='5432',
-#     user='postgres',
-#     database='school',
-#     password='qsa-1299'
-# )
-
 cursor = db.cursor()
 
 alphabet = [*[chr(i) for i in range(97, 123)], *[chr(i)
