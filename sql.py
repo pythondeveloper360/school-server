@@ -145,7 +145,6 @@ def authStudent(gr):
         grNo=sql.Identifier("gr"))
     cursor.execute(sqlquery, (gr,))
     data = cursor.fetchone()
-    print(gr)
     return data[0] if data else False
 
 

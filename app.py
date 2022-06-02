@@ -23,64 +23,15 @@ async def getWork(request: Request):
     gr = request.headers.get('gr')
     email = request.headers.get('email')
     phone = request.headers.get('phone')
-    if gr:
-        if gr:
-            return {'works': sql.getAllWorkStudent(gr=gr)}
-        else:
-            return {'status': 'error'}
+    if gr and sql.authStudent(gr=gr):
+        return {'works': sql.getAllWorkStudent(gr=gr), 'status': True}
 
     elif email:
         credentials = sql.getTeacherCredential(email=email)
-        if credentials:
-            return{"works": sql.getAllWork(credentials['class'], credentials['section'])}
-        else:
-            return {'status': 'error'}
-
-    else:
-        return {'status': 'error'}
-
-
-@app.get('/authStaff')
-async def authStaff(req: Request):
-    if req.headers.get('username') and req.headers.get('password'):
-        w = sql.AuthStaff(req.headers.get('username'),
-                          password=req.headers.get('password'))
-        if w:
-            return {"auth": True, "name": w}
-        else:
-            return{"auth": False}
-    else:
-        return{"auth": False}
-
-
-@app.get('/addTeacher')
-async def addTeacher(req: Request):
-    email, name, _class, section, username, password = req.headers.get('email'), req.headers.get('name'), req.headers.get(
-        'class'), req.headers.get('section'), req.headers.get('username'), req.headers.get('password')
-    if (email and name and _class and section) and sql.AuthStaff(username=username, password=password):
-        sql.newTeacher(email=email, name=name, _class=_class, section=section)
-        return {'status': True}
-    else:
-        return{'status': False}
-
-
-@app.get('/allTeachers')
-async def allTeachers(req: Request):
-    if sql.AuthStaff(username=req.headers.get('username'), password=req.headers.get('password')):
-        return {'status': True, "teachers": sql.allTeachers()}
-    else:
-        return{'status': False}
-
-
-@app.get('/parentWorks')
-async def getParentWorks(req: Request):
-    if req.headers.get('phone'):
-        if sql.checkParent(req.headers.get('phone')):
-            return {"status": True, "works": sql.getAllWorkForParent(phone=req.headers.get('phone'))}
-        else:
-            return {"status": False}
-    else:
-        return {"status": False}
+        return{"works": sql.getAllWork(_class=credentials.get('class'), section=credentials.get('section')), 'status': True}
+    elif phone:
+        return {"works": sql.getAllWorkForParent(phone=phone), 'status': True}
+    return {'status': False}
 
 
 @app.get('/seenByStudent')
@@ -106,31 +57,18 @@ async def workById(req: Request):
 @app.get('/auth')
 async def auth(request: Request):
     gr = request.headers.get('gr')
-    work = sql.authStudent(gr=gr)
-    return {"auth": True} if work else {"auth": False}
-
-
-@app.get('/authTeacher')
-async def authTeacher(req: Request):
-    email, password = req.headers.get('email'), req.headers.get("password")
-    work = sql.authTeacher(email=email, password=password)
-    return {'auth': True} if work else {'auth': False}
-
-
-@app.get('/authParent')
-async def authParent(req: Request):
-    if req.headers.get('phone') and sql.checkParent(req.headers.get('phone')):
-        return {"status": True}
-    else:
-        return {"status": False}
-
-
-@app.get('/authStudent')
-async def authStudent(req: Request):
-    if sql.authStudent(req.headers.get('gr')):
-        return{"status": True}
-    else:
-        return {"status": False}
+    email, password = request.headers.get(
+        'email'), request.headers.get('password')
+    phone = request.headers.get('phone')
+    if gr and sql.authStudent(gr=gr):
+        works = sql.getAllWorkStudent(gr=gr)
+        return {"auth": True, "works": works}
+    elif email and password and sql.authTeacher(email=email, password=password):
+        credentials = sql.getTeacherCredential(email=email)
+        return {'auth': True, "works": sql.getAllWork(_class=credentials.get('class'), section=credentials.get('section'))}
+    elif phone and sql.checkParent(phone=phone):
+        return {'auth': True, "works": sql.getAllWorkForParent(phone=phone)}
+    return {'auth': False}
 
 
 @app.get('/onDayWork')
@@ -183,7 +121,7 @@ async def uploadWork(req: Request):
                 work = sql.insertWork(section=teacher.get('section'), _class=teacher.get(
                     'class'), work=jData.get('work'), date=jData.get('date'))
                 if work:
-                    return {'status':True,"data":work}
+                    return {'status': True, "data": work}
                 else:
                     return{"status": False}
             else:
