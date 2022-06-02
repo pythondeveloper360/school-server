@@ -59,6 +59,7 @@ async def auth(request: Request):
     email, password = request.headers.get(
         'email'), request.headers.get('password')
     phone = request.headers.get('phone')
+    print(email,password)
     if gr and sql.authStudent(gr=gr):
         works = sql.getAllWorkStudent(gr=gr)
         return {"auth": True, "works": works}
