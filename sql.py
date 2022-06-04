@@ -53,8 +53,7 @@ def getAllWorkStudent(gr):
         data = cursor.fetchall()
         if data:
             for i in data:
-                rData.append({"id": i[0], "date": i[1].strftime(
-                    '%b %d %A'), "seen": checkSeenBy(seenBy=i[2], gr=gr), 'section': cre.get('section'), 'class': cre.get('class')})
+                rData.append({"id": i[0], "date": i[1],"seen": checkSeenBy(seenBy=i[2], gr=gr), 'section': cre.get('section'), 'class': cre.get('class')})
             return rData
         else:
             return False
@@ -215,4 +214,3 @@ def seenWork(id, by):
     else:
         return False
     # data.append(by)
-
