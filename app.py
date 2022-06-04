@@ -59,15 +59,14 @@ async def auth(request: Request):
     email, password = request.headers.get(
         'email'), request.headers.get('password')
     phone = request.headers.get('phone')
-    print(email,password)
+    
     if gr and sql.authStudent(gr=gr):
-        works = sql.getAllWorkStudent(gr=gr)
-        return {"auth": True, "works": works}
+        return {"auth": True}
     elif email and password and sql.authTeacher(email=email, password=password):
         credentials = sql.getTeacherCredential(email=email)
-        return {'auth': True, "works": sql.getAllWork(_class=credentials.get('class'), section=credentials.get('section'))}
+        return {'auth': True}
     elif phone and sql.authParent(phone=phone):
-        return {'auth': True, "works": sql.getAllWorkForParent(phone=phone)}
+        return {'auth': True}
     return {'auth': False}
 
 
