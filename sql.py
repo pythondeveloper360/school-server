@@ -180,8 +180,7 @@ def getAllWorkForParent(phone):
     )
     cursor.execute(sqlquery, (phone,))
     data = cursor.fetchall()
-    rList = [{'id': i[0], 'date':i[1].strftime(
-        '%b %d %A'), 'class':i[2], "section":i[3]} for i in data]
+    rList = [{'id': i[0], 'date':i[1], 'class':i[2], "section":i[3]} for i in data]
     return rList
 
 
