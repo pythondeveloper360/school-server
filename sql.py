@@ -212,43 +212,40 @@ def seenWork(id, by):
 
 
 def reportBug(by, bug, credential, date):
-    _id = idGenerator()
     _date = datetime.strptime(date, '%a %b %d  %Y')
     if by == 'teacher':
         email = credential.get('email')
-        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug}) values (%s,%s,%s,%s,%s)').format(
-            id=sql.Identifier("id"),
+        sqlquery = sql.SQL('insert into bugs ({by},{credential},{date},{bug}) values (%s,%s,%s,%s)').format(
             by=sql.Identifier("by"),
             credential=sql.Identifier("credential"),
             date=sql.Identifier("date"),
             bug=sql.Identifier("bug")
         )
-        cursor.execute(sqlquery, (_id, by, email, _date, bug))
+        cursor.execute(sqlquery, (by, email, _date, bug))
         db.commit()
         return True
     elif by == 'parent':
         phone = credential.get('phone')
-        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug}) values (%s,%s,%s,%s,%s)').format(
-            id=sql.Identifier("id"),
+        sqlquery = sql.SQL('insert into bugs ({by},{credential},{date},{bug}) values (%s,%s,%s,%s)').format(
             by=sql.Identifier("by"),
             credential=sql.Identifier("credential"),
             date=sql.Identifier("date"),
             bug=sql.Identifier("bug")
         )
-        cursor.execute(sqlquery, (_id, by, phone, _date, bug))
+        cursor.execute(sqlquery, (by, phone, _date, bug))
         db.commit()
         return True
 
     elif by == 'student':
         gr = credential.get('gr')
-        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug}) values (%s,%s,%s,%s,%s)').format(
-            id=sql.Identifier("id"),
+        sqlquery = sql.SQL('insert into bugs ({by},{credential},{date},{bug}) values (%s,%s,%s,%s)').format(
             by=sql.Identifier("by"),
             credential=sql.Identifier("credential"),
             date=sql.Identifier("date"),
             bug=sql.Identifier("bug")
         )
-        cursor.execute(sqlquery, (_id, by, gr, _date, bug))
+        cursor.execute(sqlquery, (by, gr, _date, bug))
+        
         db.commit()
         return True
     return False
