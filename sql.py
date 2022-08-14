@@ -53,7 +53,8 @@ def getAllWorkStudent(gr):
         data = cursor.fetchall()
         if data:
             for i in data:
-                rData.append({"id": i[0], "date": i[1],"seen": checkSeenBy(seenBy=i[2], gr=gr), 'section': cre.get('section'), 'class': cre.get('class')})
+                rData.append({"id": i[0], "date": i[1], "seen": checkSeenBy(
+                    seenBy=i[2], gr=gr), 'section': cre.get('section'), 'class': cre.get('class')})
             return rData
         else:
             return False
@@ -108,9 +109,6 @@ def getParentList(_class: str, section: str):
 
 def insertWork(_class: str, section: str, work: dict, date):
     _id = idGenerator()
-
-    # TODO Add this line in deployment
-    # if not checkOnDayWork(_date):
     _date = datetime.strptime(date, "%a %b %d  %Y")
     sqlquery = sql.SQL(
         'insert into work ({id},{date},{works},{_class},{section},{parents}) values (%s,%s,%s,%s,%s,%s)').format(
@@ -126,9 +124,6 @@ def insertWork(_class: str, section: str, work: dict, date):
     db.commit()
 
     return {'work': True, "id": _id, 'date': date}
-    # TODO and this line
-    # else:
-    #     return False
 
 
 def getCredential(gr):
@@ -180,7 +175,8 @@ def getAllWorkForParent(phone):
     )
     cursor.execute(sqlquery, (phone,))
     data = cursor.fetchall()
-    rList = [{'id': i[0], 'date':i[1], 'class':i[2], "section":i[3]} for i in data]
+    rList = [{'id': i[0], 'date':i[1], 'class':i[2], "section":i[3]}
+             for i in data]
     return rList
 
 
@@ -213,3 +209,46 @@ def seenWork(id, by):
     else:
         return False
     # data.append(by)
+
+
+def reportBug(by, bug, credential, date):
+    _id = idGenerator()
+    _date = datetime.strptime(date, '%a %b %d  %Y')
+    if by == 'teacher':
+        email = credential.get('email')
+        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug} values (%s,%s,%s,%s,%s))').format(
+            id=sql.Identifier("id"),
+            by=sql.Identifier("by"),
+            credential=sql.Identifier("credential"),
+            date=sql.Identifier("date"),
+            bug=sql.Identifier("bug")
+        )
+        cursor.execute(sqlquery, (_id, by, email, _date, bug))
+        db.commit()
+        return True
+    elif by == 'parent':
+        phone = credential.get('phone')
+        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug} values (%s,%s,%s,%s,%s))').format(
+            id=sql.Identifier("id"),
+            by=sql.Identifier("by"),
+            credential=sql.Identifier("credential"),
+            date=sql.Identifier("date"),
+            bug=sql.Identifier("bug")
+        )
+        cursor.execute(sqlquery, (_id, by, phone, _date, bug))
+        db.commit()
+        return True
+
+    elif by == 'student':
+        gr = credential.get('gr')
+        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug} values (%s,%s,%s,%s,%s))').format(
+            id=sql.Identifier("id"),
+            by=sql.Identifier("by"),
+            credential=sql.Identifier("credential"),
+            date=sql.Identifier("date"),
+            bug=sql.Identifier("bug")
+        )
+        cursor.execute(sqlquery, (_id, by, gr, _date, bug))
+        db.commit()
+        return True
+    return False

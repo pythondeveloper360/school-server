@@ -59,7 +59,7 @@ async def auth(request: Request):
     email, password = request.headers.get(
         'email'), request.headers.get('password')
     phone = request.headers.get('phone')
-    
+
     if gr and sql.authStudent(gr=gr):
         return {"auth": True}
     elif email and password and sql.authTeacher(email=email, password=password):
@@ -92,3 +92,11 @@ async def uploadWork(req: Request):
 
     else:
         return{"status": False}
+
+app.post('/reportBug')
+async def reportBug(req: Request):
+    jData = await req.json()
+    if sql.reportBug(by=jData.get('by'), bug=jData.get("bug"),
+                     credential=jData.get("credential"), date=jData.get("date")):
+        return {'status': True}
+    return {'status': False}
