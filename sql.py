@@ -216,7 +216,7 @@ def reportBug(by, bug, credential, date):
     _date = datetime.strptime(date, '%a %b %d  %Y')
     if by == 'teacher':
         email = credential.get('email')
-        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug} values (%s,%s,%s,%s,%s))').format(
+        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug}) values (%s,%s,%s,%s,%s)').format(
             id=sql.Identifier("id"),
             by=sql.Identifier("by"),
             credential=sql.Identifier("credential"),
@@ -228,7 +228,7 @@ def reportBug(by, bug, credential, date):
         return True
     elif by == 'parent':
         phone = credential.get('phone')
-        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug} values (%s,%s,%s,%s,%s))').format(
+        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug}) values (%s,%s,%s,%s,%s)').format(
             id=sql.Identifier("id"),
             by=sql.Identifier("by"),
             credential=sql.Identifier("credential"),
@@ -241,7 +241,7 @@ def reportBug(by, bug, credential, date):
 
     elif by == 'student':
         gr = credential.get('gr')
-        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug} values (%s,%s,%s,%s,%s))').format(
+        sqlquery = sql.SQL('insert into bugs ({id},{by},{credential},{date},{bug}) values (%s,%s,%s,%s,%s)').format(
             id=sql.Identifier("id"),
             by=sql.Identifier("by"),
             credential=sql.Identifier("credential"),
