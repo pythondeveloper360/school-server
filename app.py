@@ -99,4 +99,4 @@ async def reportBug(req: Request):
     if sql.reportBug(by=jData.get('by'), bug=jData.get("bug"),
                      credential=jData.get("credential"), date=jData.get("date")):
         return {'status': True}
-    return {'status': False}
+    return {'status': 'False'}
